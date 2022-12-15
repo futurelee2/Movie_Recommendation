@@ -8,6 +8,10 @@ options = webdriver.ChromeOptions()
 options.add_argument('lang=ko_KR')
 driver = webdriver.Chrome('./chromedriver.exe', options=options)
 
+#selenium은 웹사이트 테스트를 위한 도구로 브라우저 동작을 자동화 가능.
+# 프로그래밍으로 브라우저 동작을 제어해서 마치 사람이 이용하는 것 같이 웹페이지를 요청하고 응답을 받아올 수 있음.
+
+
 #지정되어있어 for문 안에서 불필요한 것들 빼버림
 review_button_xpath = '//*[@id="movieEndTabMenu"]/li[6]/a' #동영상 없으면 li[5], 있으면 li[6]
 review_num_path = '//*[@id="reviewTab"]/div/div/div[2]/span/em'
@@ -17,8 +21,8 @@ review_xpath = '//*[@id="content"]/div[1]/div[4]/div[1]/div[4]'
 # 파일명은 'reviews_{}.csv'. format(연도)
 # crawling 코드 완성되면 PR 부탁드립니다 ^,^
 
-your_year = 2022
-for page in range(1,32): #영화 페이지
+your_year = 2016
+for page in range(30,60): #영화 페이지
     url = 'https://movie.naver.com/movie/sdb/browsing/bmovie.naver?open={}&page={}'.format(your_year,page)
     titles = [] #페이지 20개 긁을때마다 저장
     reviews = []
@@ -41,11 +45,11 @@ for page in range(1,32): #영화 페이지
 
                 #리뷰 건수
                 review_num = driver.find_element('xpath', review_num_path).text
-                review_num = review_num.replace(',','') #리뷰개수 1000개 넘어가면 콤마찍힘
-                review_range = (int(review_num)-1) // 10+1  #10으로 나눠서 떨어졌을 경우,
+                review_num = review_num.replace(',','') #리뷰개수 1000개 넘어가면 콤마찍힘 > 콤마없애기
+                review_range = (int(review_num)-1) // 10+1  #10으로 나눠서 떨어졌을 경우 때문, 몫 반환 (나머지 반환 %)
                 #문자열임으로 int로 바꿔줘야함, 한페이지당 10개 리뷰
 
-                if review_range>3:
+                if review_range>3: #30페이지까지 리뷰 들고오기
                     review_range=3
 
                 for review_page in range(1, review_range+1):
